@@ -1,4 +1,4 @@
-package com.managment.goodsmanagement;
+package com.management.goodsmanagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
