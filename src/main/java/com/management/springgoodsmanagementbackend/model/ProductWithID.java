@@ -1,4 +1,4 @@
-package com.management.goodsmanagement.model;
+package com.management.springgoodsmanagementbackend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

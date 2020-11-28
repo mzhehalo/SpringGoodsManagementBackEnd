@@ -1,8 +1,8 @@
-package com.management.goodsmanagement.controllers;
+package com.management.springgoodsmanagementbackend.controllers;
 
-import com.management.goodsmanagement.model.User;
-import com.management.goodsmanagement.model.UserWithFirstName;
-import com.management.goodsmanagement.services.UserService;
+import com.management.springgoodsmanagementbackend.model.User;
+import com.management.springgoodsmanagementbackend.model.UserWithFirstName;
+import com.management.springgoodsmanagementbackend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

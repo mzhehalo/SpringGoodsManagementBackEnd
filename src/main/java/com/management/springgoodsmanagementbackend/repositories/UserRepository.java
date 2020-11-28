@@ -1,6 +1,6 @@
-package com.management.goodsmanagement.repositories;
+package com.management.springgoodsmanagementbackend.repositories;
 
-import com.management.goodsmanagement.model.User;
+import com.management.springgoodsmanagementbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.management.goodsmanagement.bean;
+package com.management.springgoodsmanagementbackend.bean;
 
 public class AuthenticationBean {
 

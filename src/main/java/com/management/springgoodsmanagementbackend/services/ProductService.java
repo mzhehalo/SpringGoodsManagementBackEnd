@@ -1,14 +1,13 @@
-package com.management.goodsmanagement.services;
+package com.management.springgoodsmanagementbackend.services;
 
-import com.management.goodsmanagement.model.Product;
-import com.management.goodsmanagement.model.ProductWithID;
-import com.management.goodsmanagement.model.User;
-import com.management.goodsmanagement.repositories.ProductRepository;
-import com.management.goodsmanagement.repositories.UserRepository;
+import com.management.springgoodsmanagementbackend.model.Product;
+import com.management.springgoodsmanagementbackend.model.ProductWithID;
+import com.management.springgoodsmanagementbackend.model.User;
+import com.management.springgoodsmanagementbackend.repositories.ProductRepository;
+import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;

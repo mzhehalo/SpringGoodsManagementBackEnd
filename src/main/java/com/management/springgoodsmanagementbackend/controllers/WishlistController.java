@@ -1,13 +1,10 @@
-package com.management.goodsmanagement.controllers;
+package com.management.springgoodsmanagementbackend.controllers;
 
-import com.management.goodsmanagement.model.Product;
-import com.management.goodsmanagement.model.ProductIdWithCustomerId;
-import com.management.goodsmanagement.model.User;
-import com.management.goodsmanagement.services.WishlistService;
+import com.management.springgoodsmanagementbackend.model.Product;
+import com.management.springgoodsmanagementbackend.model.ProductIdWithCustomerId;
+import com.management.springgoodsmanagementbackend.services.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +17,17 @@ public class WishlistController {
     @Autowired
     private WishlistService wishlistService;
 
-    @RequestMapping(path = "/get/{loggedUser}", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-products/{loggedUser}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Integer> getAllProductsFromWishlist(@PathVariable Integer loggedUser){
-        System.out.println("loggedUser" + loggedUser);
+    public List<Product> getAllProductsFromWishlist(@PathVariable Integer loggedUser){
         return wishlistService.getAllProductsFromWishlist(loggedUser);
+    }
+
+    @RequestMapping(path = "/get-likes/{loggedUser}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Integer> getAllLikesProductsFromWishlist(@PathVariable Integer loggedUser){
+        System.out.println("loggedUser" + loggedUser);
+        return wishlistService.getAllLikesProductsFromWishlist(loggedUser);
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)

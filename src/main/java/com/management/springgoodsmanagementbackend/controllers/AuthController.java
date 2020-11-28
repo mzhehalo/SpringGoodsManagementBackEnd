@@ -1,16 +1,13 @@
-package com.management.goodsmanagement.controllers;
+package com.management.springgoodsmanagementbackend.controllers;
 
-import com.management.goodsmanagement.bean.AuthenticationBean;
-import com.management.goodsmanagement.dto.AuthenticationRequest;
-import com.management.goodsmanagement.dto.AuthenticationResponse;
-import com.management.goodsmanagement.services.AuthService;
-import com.management.goodsmanagement.services.UserService;
-import com.management.goodsmanagement.model.User;
+import com.management.springgoodsmanagementbackend.bean.AuthenticationBean;
+import com.management.springgoodsmanagementbackend.services.AuthService;
+import com.management.springgoodsmanagementbackend.services.UserService;
+import com.management.springgoodsmanagementbackend.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController

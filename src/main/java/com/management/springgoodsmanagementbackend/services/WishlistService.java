@@ -1,10 +1,10 @@
-package com.management.goodsmanagement.services;
+package com.management.springgoodsmanagementbackend.services;
 
-import com.management.goodsmanagement.model.Product;
-import com.management.goodsmanagement.model.ProductIdWithCustomerId;
-import com.management.goodsmanagement.model.User;
-import com.management.goodsmanagement.repositories.ProductRepository;
-import com.management.goodsmanagement.repositories.UserRepository;
+import com.management.springgoodsmanagementbackend.model.Product;
+import com.management.springgoodsmanagementbackend.model.ProductIdWithCustomerId;
+import com.management.springgoodsmanagementbackend.model.User;
+import com.management.springgoodsmanagementbackend.repositories.ProductRepository;
+import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,24 +19,33 @@ public class WishlistService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<Integer> getAllProductsFromWishlist(Integer loggedUser) {
-        System.out.println("Wish!!!!!!!");
-
+    public List<Product> getAllProductsFromWishlist(Integer loggedUser) {
         List<Integer> listProductsOfActiveUser = new ArrayList<>();
-
         Optional<User> activeUser = userRepository.findById(loggedUser);
-
         activeUser.ifPresent(user ->
                 user.getProductsWishList().forEach(
                         product ->
-                        listProductsOfActiveUser.add(product.getId())
+                                listProductsOfActiveUser.add(product.getId())
                 ));
-
-
         List<Integer> listProductsWithoutDuplicates = listProductsOfActiveUser.stream()
                 .distinct()
                 .collect(Collectors.toList());
+        return productRepository.findAllById(listProductsWithoutDuplicates);
+    }
 
+    public List<Integer> getAllLikesProductsFromWishlist(Integer loggedUser) {
+        System.out.println("Wish!!!!!!!");
+
+        List<Integer> listLikesProductsOfActiveUser = new ArrayList<>();
+        Optional<User> activeUser = userRepository.findById(loggedUser);
+        activeUser.ifPresent(user ->
+                user.getProductsWishList().forEach(
+                        product ->
+                        listLikesProductsOfActiveUser.add(product.getId())
+                ));
+        List<Integer> listProductsWithoutDuplicates = listLikesProductsOfActiveUser.stream()
+                .distinct()
+                .collect(Collectors.toList());
         System.out.println("Without duplicates: " + listProductsWithoutDuplicates);
 
         return listProductsWithoutDuplicates;

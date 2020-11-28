@@ -1,31 +1,17 @@
-package com.management.goodsmanagement.services;
+package com.management.springgoodsmanagementbackend.services;
 
-import com.management.goodsmanagement.bean.AuthenticationBean;
-import com.management.goodsmanagement.dto.AuthenticationRequest;
-import com.management.goodsmanagement.dto.AuthenticationResponse;
-import com.management.goodsmanagement.model.User;
-import com.management.goodsmanagement.repositories.UserRepository;
+import com.management.springgoodsmanagementbackend.model.User;
+import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.*;
 import java.util.List;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Service
 @AllArgsConstructor
