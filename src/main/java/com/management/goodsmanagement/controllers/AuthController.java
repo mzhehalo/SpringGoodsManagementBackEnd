@@ -26,7 +26,7 @@ public class AuthController {
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public List<User> register(@RequestBody User user) {
-
+        System.out.println(user);
         return authService.registerUser(user);
     }
 

@@ -1,7 +1,7 @@
 package com.management.goodsmanagement.controllers;
 
 import com.management.goodsmanagement.model.User;
-import com.management.goodsmanagement.model.UserWithString;
+import com.management.goodsmanagement.model.UserWithFirstName;
 import com.management.goodsmanagement.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4300")
+@RequestMapping(path = "/user")
 public class UserController {
 
     @Autowired
@@ -23,7 +24,7 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @RequestMapping(path = "/user", method = RequestMethod.POST)
+    @RequestMapping(path = "/get", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public User getUser(@RequestBody String firstName) {
         System.out.println(firstName);
@@ -32,8 +33,8 @@ public class UserController {
 
     @RequestMapping(path = "/edit", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public User editUser(@RequestBody UserWithString userWithString){
-        System.out.println(userWithString);
-        return userService.editUser(userWithString);
+    public User editUser(@RequestBody UserWithFirstName userWithFirstName){
+        System.out.println(userWithFirstName);
+        return userService.editUser(userWithFirstName);
     }
 }

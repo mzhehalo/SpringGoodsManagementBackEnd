@@ -1,26 +1,22 @@
 package com.management.goodsmanagement.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.Constraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -39,12 +35,28 @@ public class User implements UserDetails {
     private String email;
     @NotBlank(message = "Password is required")
     private String password;
-//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ROLE_CUSTOMER")
+    //    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ROLE_CUSTOMER")
 //    @Column(nullable = false, columnDefinition = "ROLE_CUSTOMER")
     private String role;
     @JsonFormat(pattern = "yyyy-MMM-dd HH-mm-ss")
     private ZonedDateTime created;
     private boolean enabled;
+    @JsonIgnore
+//    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @ManyToMany(targetEntity = Product.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+//    @Column
+//    @org.hibernate.annotations.ForeignKey(name = "none")
+//    @JoinColumn(name = "wishlist_product_id")
+    @JoinTable
+    private List<Product> productsWishList;
+
+    public void addProduct(Product product){
+        this.productsWishList.add(product);
+    }
+
+    public void removeProduct(Product product){
+        this.productsWishList.remove(product);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

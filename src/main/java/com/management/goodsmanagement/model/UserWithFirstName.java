@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UserWithString {
+public class UserWithFirstName {
 
     private User user;
 
