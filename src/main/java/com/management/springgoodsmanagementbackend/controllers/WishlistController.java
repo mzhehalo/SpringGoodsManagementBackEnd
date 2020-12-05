@@ -1,7 +1,7 @@
 package com.management.springgoodsmanagementbackend.controllers;
 
 import com.management.springgoodsmanagementbackend.model.Product;
-import com.management.springgoodsmanagementbackend.model.ProductIdWithCustomerId;
+import com.management.springgoodsmanagementbackend.dtos.UserIdWithProductIdDTO;
 import com.management.springgoodsmanagementbackend.services.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,9 +32,9 @@ public class WishlistController {
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Product> addProductToWishlist(@RequestBody ProductIdWithCustomerId productIdWithCustomerId) {
-        System.out.println("Controller" + productIdWithCustomerId);
-        return wishlistService.addProductToWishlist(productIdWithCustomerId);
+    public List<Product> addProductToWishlist(@RequestBody UserIdWithProductIdDTO userIdWithProductIdDTO) {
+        System.out.println("Controller" + userIdWithProductIdDTO);
+        return wishlistService.addProductToWishlist(userIdWithProductIdDTO);
     }
 
     @RequestMapping(path = "delete/{customerId}/{productId}", method = RequestMethod.DELETE)

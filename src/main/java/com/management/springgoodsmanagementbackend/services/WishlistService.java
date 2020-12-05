@@ -1,7 +1,7 @@
 package com.management.springgoodsmanagementbackend.services;
 
 import com.management.springgoodsmanagementbackend.model.Product;
-import com.management.springgoodsmanagementbackend.model.ProductIdWithCustomerId;
+import com.management.springgoodsmanagementbackend.dtos.UserIdWithProductIdDTO;
 import com.management.springgoodsmanagementbackend.model.User;
 import com.management.springgoodsmanagementbackend.repositories.ProductRepository;
 import com.management.springgoodsmanagementbackend.repositories.UserRepository;
@@ -20,14 +20,14 @@ public class WishlistService {
     private UserRepository userRepository;
 
     public List<Product> getAllProductsFromWishlist(Integer loggedUser) {
-        List<Integer> listProductsOfActiveUser = new ArrayList<>();
+        List<Integer> listProductsOfLoggedUser = new ArrayList<>();
         Optional<User> activeUser = userRepository.findById(loggedUser);
         activeUser.ifPresent(user ->
                 user.getProductsWishList().forEach(
                         product ->
-                                listProductsOfActiveUser.add(product.getId())
+                                listProductsOfLoggedUser.add(product.getId())
                 ));
-        List<Integer> listProductsWithoutDuplicates = listProductsOfActiveUser.stream()
+        List<Integer> listProductsWithoutDuplicates = listProductsOfLoggedUser.stream()
                 .distinct()
                 .collect(Collectors.toList());
         return productRepository.findAllById(listProductsWithoutDuplicates);
@@ -53,10 +53,10 @@ public class WishlistService {
     }
 
 
-    public List<Product> addProductToWishlist(ProductIdWithCustomerId productIdWithCustomerId) {
-        System.out.println("Service" + productIdWithCustomerId);
-        Product product = productRepository.findById(productIdWithCustomerId.getProductId());
-        Optional<User> user = userRepository.findById(productIdWithCustomerId.getCustomerId());
+    public List<Product> addProductToWishlist(UserIdWithProductIdDTO userIdWithProductIdDTO) {
+        System.out.println("Service" + userIdWithProductIdDTO);
+        Product product = productRepository.findById(userIdWithProductIdDTO.getProductId());
+        Optional<User> user = userRepository.findById(userIdWithProductIdDTO.getUserId());
         user.ifPresent(user1 -> {
 //                    user1.getProductsWishList().add(product);
                     user1.addProduct(product);
@@ -79,6 +79,5 @@ public class WishlistService {
                         })
         );
         return productRepository.findAll();
-
     }
 }

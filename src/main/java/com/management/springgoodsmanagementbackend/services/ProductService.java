@@ -1,7 +1,7 @@
 package com.management.springgoodsmanagementbackend.services;
 
 import com.management.springgoodsmanagementbackend.model.Product;
-import com.management.springgoodsmanagementbackend.model.ProductWithID;
+import com.management.springgoodsmanagementbackend.dtos.ProductWithIdDTO;
 import com.management.springgoodsmanagementbackend.model.User;
 import com.management.springgoodsmanagementbackend.repositories.ProductRepository;
 import com.management.springgoodsmanagementbackend.repositories.UserRepository;
@@ -21,14 +21,14 @@ public class ProductService {
     @Autowired
     private UserRepository userRepository;
 
-    public Product addProduct(ProductWithID productWithID) {
-        System.out.println("Service 1:" + productWithID);
-        productWithID.getProduct().setProductCreated(ZonedDateTime.now());
-        userRepository.findById(productWithID.getId()).ifPresent(user -> {
-            productWithID.getProduct().setProductSeller(user);
+    public Product addProduct(ProductWithIdDTO productWithIdDTO) {
+        System.out.println("Service 1:" + productWithIdDTO);
+        productWithIdDTO.getProduct().setProductCreated(ZonedDateTime.now());
+        userRepository.findById(productWithIdDTO.getId()).ifPresent(user -> {
+            productWithIdDTO.getProduct().setProductSeller(user);
         });
-        System.out.println("Service 2:" + productWithID);
-        return productRepository.save(productWithID.getProduct());
+        System.out.println("Service 2:" + productWithIdDTO);
+        return productRepository.save(productWithIdDTO.getProduct());
     }
 
     public List<Product> getProducts() {
@@ -39,14 +39,14 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public Product editProduct(ProductWithID productWithID) {
-        Product productEdit = productRepository.findById(productWithID.getId());
+    public Product editProduct(ProductWithIdDTO productWithIdDTO) {
+        Product productEdit = productRepository.findById(productWithIdDTO.getId());
 
-        productEdit.setProductName(productWithID.getProduct().getProductName());
-        productEdit.setProductDescription(productWithID.getProduct().getProductDescription());
+        productEdit.setProductName(productWithIdDTO.getProduct().getProductName());
+        productEdit.setProductDescription(productWithIdDTO.getProduct().getProductDescription());
         productEdit.setProductCreated(ZonedDateTime.now());
-        productEdit.setProductBrand(productWithID.getProduct().getProductBrand());
-        productEdit.setProductPrice(productWithID.getProduct().getProductPrice());
+        productEdit.setProductBrand(productWithIdDTO.getProduct().getProductBrand());
+        productEdit.setProductPrice(productWithIdDTO.getProduct().getProductPrice());
             return productRepository.save(productEdit);
 
     }

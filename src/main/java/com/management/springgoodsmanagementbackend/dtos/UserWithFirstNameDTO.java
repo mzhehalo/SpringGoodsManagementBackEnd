@@ -1,5 +1,6 @@
-package com.management.springgoodsmanagementbackend.model;
+package com.management.springgoodsmanagementbackend.dtos;
 
+import com.management.springgoodsmanagementbackend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UserWithFirstName {
+public class UserWithFirstNameDTO {
 
     private User user;
 

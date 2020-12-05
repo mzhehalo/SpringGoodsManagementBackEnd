@@ -1,14 +1,13 @@
 package com.management.springgoodsmanagementbackend.services;
 
 import com.management.springgoodsmanagementbackend.model.User;
-import com.management.springgoodsmanagementbackend.model.UserWithFirstName;
+import com.management.springgoodsmanagementbackend.dtos.UserWithFirstNameDTO;
 import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -19,22 +18,18 @@ public class UserService {
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
     public User getUser(String firstName) {
         return userRepository.findByFirstName(firstName);
     }
 
-    public User editUser(UserWithFirstName userWithFirstName) {
-        User userEdit = userRepository.findByFirstName(userWithFirstName.getFirstName());
-        userEdit.setFirstName(userWithFirstName.getUser().getFirstName());
-        userEdit.setLastName(userWithFirstName.getUser().getLastName());
-        userEdit.setEmail(userWithFirstName.getUser().getEmail());
+    public User editUser(UserWithFirstNameDTO userWithFirstNameDTO) {
+        User userEdit = userRepository.findByFirstName(userWithFirstNameDTO.getFirstName());
+        userEdit.setFirstName(userWithFirstNameDTO.getUser().getFirstName());
+        userEdit.setLastName(userWithFirstNameDTO.getUser().getLastName());
+        userEdit.setEmail(userWithFirstNameDTO.getUser().getEmail());
         userEdit.setCreated(ZonedDateTime.now());
 
-        userEdit.setPassword(bCryptPasswordEncoder.encode(userWithFirstName.getUser().getPassword()));
+        userEdit.setPassword(bCryptPasswordEncoder.encode(userWithFirstNameDTO.getUser().getPassword()));
         System.out.println(userEdit);
         return userRepository.save(userEdit);
     }

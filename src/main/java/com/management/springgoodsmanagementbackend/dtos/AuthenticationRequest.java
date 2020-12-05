@@ -1,4 +1,4 @@
-package com.management.springgoodsmanagementbackend.dto;
+package com.management.springgoodsmanagementbackend.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

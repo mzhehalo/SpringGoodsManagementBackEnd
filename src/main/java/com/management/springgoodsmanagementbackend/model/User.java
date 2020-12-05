@@ -48,6 +48,10 @@ public class User implements UserDetails {
     @JoinTable
     private List<Product> productsWishList;
 
+//    @JsonIgnore
+    @OneToMany(targetEntity = CartProduct.class)
+    private List<CartProduct> cartProductList;
+
     public void addProduct(Product product){
         this.productsWishList.add(product);
     }

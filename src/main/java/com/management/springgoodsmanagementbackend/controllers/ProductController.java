@@ -1,7 +1,7 @@
 package com.management.springgoodsmanagementbackend.controllers;
 
 import com.management.springgoodsmanagementbackend.model.Product;
-import com.management.springgoodsmanagementbackend.model.ProductWithID;
+import com.management.springgoodsmanagementbackend.dtos.ProductWithIdDTO;
 import com.management.springgoodsmanagementbackend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +20,10 @@ public class ProductController {
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Product addProduct(@RequestBody ProductWithID productWithID) {
-        System.out.println("Controller:" + productWithID);
-        System.out.println(productWithID.getId());
-        return productService.addProduct(productWithID);
+    public Product addProduct(@RequestBody ProductWithIdDTO productWithIdDTO) {
+        System.out.println("Controller:" + productWithIdDTO);
+        System.out.println(productWithIdDTO.getId());
+        return productService.addProduct(productWithIdDTO);
     }
 
     @RequestMapping(path = "/get", method = RequestMethod.GET)
@@ -41,9 +41,9 @@ public class ProductController {
 
     @RequestMapping(path = "/edit", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
-    public Product editProduct(@RequestBody ProductWithID productWithID){
-        System.out.println(productWithID);
-        return productService.editProduct(productWithID);
+    public Product editProduct(@RequestBody ProductWithIdDTO productWithIdDTO){
+        System.out.println(productWithIdDTO);
+        return productService.editProduct(productWithIdDTO);
     }
 
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
