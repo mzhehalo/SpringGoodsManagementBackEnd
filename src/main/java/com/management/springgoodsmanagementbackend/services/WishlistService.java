@@ -58,7 +58,6 @@ public class WishlistService {
         Product product = productRepository.findById(userIdWithProductIdDTO.getProductId());
         Optional<User> user = userRepository.findById(userIdWithProductIdDTO.getUserId());
         user.ifPresent(user1 -> {
-//                    user1.getProductsWishList().add(product);
                     user1.addProduct(product);
                     userRepository.save(user1);
                 }
@@ -72,8 +71,6 @@ public class WishlistService {
         Optional<User> user = userRepository.findById(customerId);
         productG.ifPresent(product2 ->
                         user.ifPresent(user1 -> {
-//                    user1.getWishList().remove(product.re);
-//                            user1.getProductsWishList().remove(product2);
                             user1.removeProduct(product2);
                             userRepository.save(user1);
                         })
