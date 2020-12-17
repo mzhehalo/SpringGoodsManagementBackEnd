@@ -1,6 +1,7 @@
 package com.management.springgoodsmanagementbackend.controllers;
 
 import com.management.springgoodsmanagementbackend.dtos.CartDTO;
+import com.management.springgoodsmanagementbackend.dtos.CartRequestDTO;
 import com.management.springgoodsmanagementbackend.model.CartProduct;
 import com.management.springgoodsmanagementbackend.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,9 @@ public class CartController {
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public List<CartProduct> addToCartProductList(@RequestBody CartProduct cartProduct){
-        System.out.println("Cart---:" + cartProduct);
-        return cartService.addToCartProductList(cartProduct);
+    public List<CartProduct> addToCartProductList(@RequestBody CartRequestDTO cartRequestDTO){
+        System.out.println("Cart---:" + cartRequestDTO);
+        return cartService.addToCartProductList(cartRequestDTO);
     }
 
     @RequestMapping(path = "/get/{userId}", method = RequestMethod.GET)

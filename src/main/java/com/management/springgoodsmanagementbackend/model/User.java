@@ -2,9 +2,7 @@ package com.management.springgoodsmanagementbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +15,10 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 @Entity
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,9 +47,13 @@ public class User implements UserDetails {
     @JoinTable
     private List<Product> productsWishList;
 
-//    @JsonIgnore
+    @JsonIgnore
     @OneToMany(targetEntity = CartProduct.class)
     private List<CartProduct> cartProductList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Ordering> orderingList;
 
     public void addProduct(Product product){
         this.productsWishList.add(product);

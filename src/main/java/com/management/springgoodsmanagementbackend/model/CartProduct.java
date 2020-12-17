@@ -1,16 +1,15 @@
 package com.management.springgoodsmanagementbackend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.lang.annotation.Target;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartProduct {
@@ -18,10 +17,14 @@ public class CartProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int userId;
+    @ManyToOne
+    private User customer;
 
-    private int productId;
+    @ManyToOne
+    private Product product;
 
     private int quantity;
+
+    private boolean ordered;
 
 }
