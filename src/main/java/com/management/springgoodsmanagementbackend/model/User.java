@@ -48,7 +48,7 @@ public class User implements UserDetails {
     private List<Product> productsWishList;
 
     @JsonIgnore
-    @OneToMany(targetEntity = CartProduct.class)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<CartProduct> cartProductList;
 
     @JsonIgnore

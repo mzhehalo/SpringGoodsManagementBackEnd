@@ -18,6 +18,10 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotBlank(message = "Main category is required")
+    private String mainCategory;
+    @NotBlank(message = "Sub category is required")
+    private String subCategory;
     @NotBlank(message = "Product Name is required")
     private String productName;
     @NotBlank(message = "Product Description is required")
@@ -26,6 +30,8 @@ public class Product {
     private String productBrand;
     @NotBlank(message = "Product price is required")
     private int productPrice;
+    @NotBlank(message = "Product img link is required")
+    private String productImg;
     @JsonFormat(pattern = "yyyy-MMM-dd HH-mm-ss")
     private ZonedDateTime productCreated;
 

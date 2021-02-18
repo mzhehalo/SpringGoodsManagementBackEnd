@@ -17,7 +17,7 @@ public class CartProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = User.class)
     private User customer;
 
     @ManyToOne

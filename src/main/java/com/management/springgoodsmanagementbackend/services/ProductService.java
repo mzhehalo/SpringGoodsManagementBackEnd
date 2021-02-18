@@ -2,10 +2,12 @@ package com.management.springgoodsmanagementbackend.services;
 
 import com.management.springgoodsmanagementbackend.dtos.ProductPageDTO;
 import com.management.springgoodsmanagementbackend.model.CartProduct;
+import com.management.springgoodsmanagementbackend.model.Ordering;
 import com.management.springgoodsmanagementbackend.model.Product;
 import com.management.springgoodsmanagementbackend.dtos.ProductWithIdDTO;
 import com.management.springgoodsmanagementbackend.model.User;
 import com.management.springgoodsmanagementbackend.repositories.CartRepository;
+import com.management.springgoodsmanagementbackend.repositories.OrderRepository;
 import com.management.springgoodsmanagementbackend.repositories.ProductRepository;
 import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +31,14 @@ public class ProductService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     public Product addProduct(ProductWithIdDTO productWithIdDTO) {
-        System.out.println("Service 1:" + productWithIdDTO);
         productWithIdDTO.getProduct().setProductCreated(ZonedDateTime.now());
         userRepository.findById(productWithIdDTO.getId()).ifPresent(user -> {
             productWithIdDTO.getProduct().setProductSeller(user);
         });
-        System.out.println("Service 2:" + productWithIdDTO);
         return productRepository.save(productWithIdDTO.getProduct());
     }
 
@@ -47,7 +49,6 @@ public class ProductService {
         productPageDTO.setNumber(productPage.getNumber());
         productPageDTO.setSize(productPage.getSize());
         productPageDTO.setTotalElements(productPage.getTotalElements());
-        System.out.println("pageRequest-----: " + productPage);
         return productPageDTO;
     }
 
@@ -63,7 +64,9 @@ public class ProductService {
         productEdit.setProductCreated(ZonedDateTime.now());
         productEdit.setProductBrand(productWithIdDTO.getProduct().getProductBrand());
         productEdit.setProductPrice(productWithIdDTO.getProduct().getProductPrice());
-            return productRepository.save(productEdit);
+        productEdit.setMainCategory(productWithIdDTO.getProduct().getMainCategory());
+        productEdit.setSubCategory(productWithIdDTO.getProduct().getSubCategory());
+        return productRepository.save(productEdit);
 
     }
 
@@ -71,14 +74,38 @@ public class ProductService {
         Optional<Product> productbyId = productRepository.findById(id);
         List<User> users = userRepository.findAll();
         List<CartProduct> allByProductId = cartRepository.findAllByProductId(id);
-        System.out.println("allByProductId-------: " + allByProductId);
 
-        for (User user: users){
+        for (User user : users) {
             productbyId.ifPresent(product ->
-            user.getProductsWishList().remove(product));
+                    user.getProductsWishList().remove(product));
+
             user.getCartProductList().removeAll(allByProductId);
+            List<Ordering> orderList = orderRepository.findAll();
+            orderList.forEach(ordering -> {
+                ordering.getCartProductListOrder().removeAll(allByProductId);
+                orderRepository.save(ordering);
+            });
             cartRepository.deleteAll(allByProductId);
         }
         productRepository.deleteById(id);
+    }
+
+    public ProductPageDTO getProductByCategory(String mainCategory, String subCategory, PageRequest pageRequest) {
+            ProductPageDTO productPageDTO = new ProductPageDTO();
+
+        if (!mainCategory.equals(subCategory)) {
+            Page<Product> productPage = productRepository.findByMainCategoryAndSubCategory(mainCategory, subCategory, pageRequest);
+            productPageDTO.setProductList(productPage.getContent());
+            productPageDTO.setNumber(productPage.getNumber());
+            productPageDTO.setSize(productPage.getSize());
+            productPageDTO.setTotalElements(productPage.getTotalElements());
+        } else {
+            Page<Product> productPage = productRepository.findByMainCategory(mainCategory, pageRequest);
+            productPageDTO.setProductList(productPage.getContent());
+            productPageDTO.setNumber(productPage.getNumber());
+            productPageDTO.setSize(productPage.getSize());
+            productPageDTO.setTotalElements(productPage.getTotalElements());
+        }
+        return productPageDTO;
     }
 }

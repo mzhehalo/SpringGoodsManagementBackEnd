@@ -40,21 +40,28 @@ public class ProductController {
     @RequestMapping(path = "/get/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Optional<Product> getProductsById(@PathVariable Integer id) {
-        System.out.println(id);
         return productService.getProductById(id);
+    }
+
+    @RequestMapping(path = "/category/{mainCategory}/{subCategory}/{currentPage}/{size}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ProductPageDTO getProductsByCategory(@PathVariable String mainCategory,
+                                               @PathVariable String subCategory,
+                                               @PathVariable Integer currentPage,
+                                               @PathVariable Integer size) {
+        PageRequest pageRequest = PageRequest.of(currentPage - 1, size);
+        return productService.getProductByCategory(mainCategory, subCategory, pageRequest);
     }
 
     @RequestMapping(path = "/edit", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.OK)
     public Product editProduct(@RequestBody ProductWithIdDTO productWithIdDTO) {
-        System.out.println(productWithIdDTO);
         return productService.editProduct(productWithIdDTO);
     }
 
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(@PathVariable Integer id) {
-        System.out.println("deleted product !!!!!!!!!!! !!!!!!!!!! !!!!!!!!!!!!!!");
         productService.deleteProduct(id);
     }
 
