@@ -21,22 +21,18 @@ public class CartController {
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public List<CartProduct> addToCartProductList(@RequestBody CartRequestDTO cartRequestDTO){
-        System.out.println("Cart---:" + cartRequestDTO);
         return cartService.addToCartProductList(cartRequestDTO);
     }
 
     @RequestMapping(path = "/get/{userId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public List<CartDTO> getCartList(@PathVariable Integer userId){
-        System.out.println("GetDTOWork");
         return cartService.getCartList(userId);
     }
 
     @RequestMapping(path = "/delete/{userId}/{productId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
     public List<CartProduct> deleteCartItem(@PathVariable Integer userId, @PathVariable Integer productId){
-        System.out.println("userId:----------" + userId + productId);
-        System.out.println("4: " + this.cartService.deleteCartItem(userId, productId));
         return this.cartService.deleteCartItem(userId, productId);
     }
 }

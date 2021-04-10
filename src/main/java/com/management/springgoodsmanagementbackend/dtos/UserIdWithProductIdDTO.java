@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserIdWithProductIdDTO {
     private int productId;
-
     private int userId;
 }

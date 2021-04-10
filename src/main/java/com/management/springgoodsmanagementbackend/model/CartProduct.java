@@ -1,11 +1,8 @@
 package com.management.springgoodsmanagementbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.lang.annotation.Target;
-import java.util.List;
 
 @Entity
 @Getter

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +31,6 @@ public class OrderService {
 
         List<CartProduct> allByCustomerId = cartRepository.findAllByCustomerId(customerId);
 
-        System.out.println("allByCustomerId----: " + allByCustomerId);
         List<CartProduct> allByCustomerIdAndOrdered = cartRepository.findAllByCustomerIdAndOrdered(customerId, false);
 
         userRepositoryById.ifPresent(user -> {

@@ -1,11 +1,14 @@
 package com.management.springgoodsmanagementbackend.controllers;
 
+import com.management.springgoodsmanagementbackend.dtos.UserWithEmailDTO;
 import com.management.springgoodsmanagementbackend.model.User;
-import com.management.springgoodsmanagementbackend.dtos.UserWithFirstNameDTO;
 import com.management.springgoodsmanagementbackend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4300")
@@ -17,15 +20,12 @@ public class UserController {
 
     @RequestMapping(path = "/get", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
-    public User getUser(@RequestBody String firstName) {
-        System.out.println(firstName);
-        return userService.getUser(firstName);
+    public User getUser(@RequestBody String email) {
+        return userService.getUser(email);
     }
 
     @RequestMapping(path = "/edit", method = RequestMethod.PUT)
-    @ResponseStatus(HttpStatus.OK)
-    public User editUser(@RequestBody UserWithFirstNameDTO userWithFirstNameDTO){
-        System.out.println(userWithFirstNameDTO);
-        return userService.editUser(userWithFirstNameDTO);
+    public ResponseEntity<String> editUser(@RequestBody @Valid UserWithEmailDTO userWithEmailDTO){
+        return userService.editUser(userWithEmailDTO);
     }
 }

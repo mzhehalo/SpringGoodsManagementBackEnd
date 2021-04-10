@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -25,22 +25,24 @@ public class Product {
     @NotBlank(message = "Product Name is required")
     private String productName;
     @NotBlank(message = "Product Description is required")
+    @Size(min = 12, max = 100)
     private String productDescription;
     @NotBlank(message = "Product Brand is required")
+    @Size(max = 100)
     private String productBrand;
-    @NotBlank(message = "Product price is required")
+    @Positive(message = "Product price must be positive")
     private int productPrice;
-    @NotBlank(message = "Product img link is required")
-    private String productImg;
+    @NotBlank(message = "Product image is required")
+    private String productImgUrl;
+    private byte[] productImg;
     @JsonFormat(pattern = "yyyy-MMM-dd HH-mm-ss")
     private ZonedDateTime productCreated;
 
-//    @JsonIgnore
+    //    @JsonIgnore
     @ManyToOne(targetEntity = User.class, optional = false, cascade = CascadeType.PERSIST)
     private User productSeller;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "productsWishList")
     private List<User> userList;
-
 }

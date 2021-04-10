@@ -19,6 +19,9 @@ public class WishlistService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ProductService productService;
+
     public List<Product> getAllProductsFromWishlist(Integer loggedUser) {
         List<Integer> listProductsOfLoggedUser = new ArrayList<>();
         Optional<User> activeUser = userRepository.findById(loggedUser);
@@ -30,11 +33,14 @@ public class WishlistService {
         List<Integer> listProductsWithoutDuplicates = listProductsOfLoggedUser.stream()
                 .distinct()
                 .collect(Collectors.toList());
-        return productRepository.findAllById(listProductsWithoutDuplicates);
+
+        List<Product> allById = productRepository.findAllById(listProductsWithoutDuplicates);
+        allById.forEach(product -> productService.setImageToProduct(product));
+
+        return allById;
     }
 
     public List<Integer> getAllLikesProductsFromWishlist(Integer loggedUser) {
-        System.out.println("Wish!!!!!!!");
 
         List<Integer> listLikesProductsOfActiveUser = new ArrayList<>();
         Optional<User> activeUser = userRepository.findById(loggedUser);
@@ -43,18 +49,15 @@ public class WishlistService {
                         product ->
                         listLikesProductsOfActiveUser.add(product.getId())
                 ));
-        List<Integer> listProductsWithoutDuplicates = listLikesProductsOfActiveUser.stream()
+
+        return listLikesProductsOfActiveUser.stream()
                 .distinct()
                 .collect(Collectors.toList());
-        System.out.println("Without duplicates: " + listProductsWithoutDuplicates);
-
-        return listProductsWithoutDuplicates;
 
     }
 
 
     public List<Product> addProductToWishlist(UserIdWithProductIdDTO userIdWithProductIdDTO) {
-        System.out.println("Service" + userIdWithProductIdDTO);
         Product product = productRepository.findById(userIdWithProductIdDTO.getProductId());
         Optional<User> user = userRepository.findById(userIdWithProductIdDTO.getUserId());
         user.ifPresent(user1 -> {
@@ -66,7 +69,6 @@ public class WishlistService {
     }
 
     public List<Product> deleteFromWishlist(Integer customerId, Integer productId) {
-        System.out.println("Service delete" + customerId + "cust" + productId);
         Optional<Product> productG = productRepository.findById(productId);
         Optional<User> user = userRepository.findById(customerId);
         productG.ifPresent(product2 ->

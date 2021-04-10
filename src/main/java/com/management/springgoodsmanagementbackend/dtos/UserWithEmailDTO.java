@@ -1,14 +1,14 @@
 package com.management.springgoodsmanagementbackend.dtos;
 
+import com.management.springgoodsmanagementbackend.model.User;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AuthenticationResponse {
-    private boolean isAuthenticated;
+public class UserWithEmailDTO {
+    private User user;
+    private String email;
 }

@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4300")
@@ -26,7 +25,6 @@ public class OrderController {
     @RequestMapping(path = "/get/orders/{sellerId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public List<Ordering> getOrders(@PathVariable Integer sellerId){
-        System.out.println("WOrk!!!!!!!!!!");
         return orderService.getOrders(sellerId);
     }
 

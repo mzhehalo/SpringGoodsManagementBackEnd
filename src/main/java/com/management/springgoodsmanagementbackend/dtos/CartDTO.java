@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartDTO {
     private Product product;
-
     private int quantity;
 }

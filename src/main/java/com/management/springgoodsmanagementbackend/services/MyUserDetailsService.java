@@ -13,13 +13,14 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Override
-    public UserDetails loadUserByUsername(String firstName) throws UsernameNotFoundException {
-        User byFirstName = userRepository.findByFirstName(firstName);
-        if (byFirstName == null) {
-            throw new UsernameNotFoundException(firstName);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User userByEmail = userRepository.findByEmail(email);
+        if (userByEmail == null) {
+            throw new UsernameNotFoundException(email);
         }
-        return new org.springframework.security.core.userdetails.User(byFirstName.getFirstName(),
-                byFirstName.getPassword(),byFirstName.getAuthorities());
+        return new org.springframework.security.core.userdetails.User(userByEmail.getEmail(),
+                userByEmail.getPassword(), userByEmail.getAuthorities());
     }
 }

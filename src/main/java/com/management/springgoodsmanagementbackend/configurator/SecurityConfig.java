@@ -27,7 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
-
     }
 
     @Bean
@@ -40,10 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http.csrf().disable().cors().and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
-                .antMatchers(HttpMethod.GET,"/login").permitAll()
+                .antMatchers(HttpMethod.GET, "/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/product/get").hasAnyRole("CUSTOMER", "SELLER")
                 .antMatchers("/edit").hasRole("CUSTOMER")
-//                .antMatchers(HttpMethod.POST, "/wishlist/**").hasAnyRole("CUSTOMER", "SELLER")
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
@@ -53,7 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:4300")
-                .allowedMethods("*");
+                .allowedMethods("*")
+                .allowedHeaders("*")
+                .allowedOrigins("*");
     }
 
     @Bean
