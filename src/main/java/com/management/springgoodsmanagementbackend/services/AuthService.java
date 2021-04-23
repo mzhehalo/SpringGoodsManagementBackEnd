@@ -32,6 +32,20 @@ public class AuthService {
 
     public ResponseEntity<String> registerUser(@Valid User user) {
         User userByEmail = userRepository.findByEmail(user.getEmail());
+        boolean userAdmin = userRepository.existsUserByEmail("admin@gmail.com");
+        if (userAdmin) {
+            log.error("Admin already exist");
+        } else {
+            User admin = new User();
+            admin.setPassword(bCryptPasswordEncoder.encode("admin_admin"));
+            admin.setCreated(ZonedDateTime.now());
+            admin.setEnabled(false);
+            admin.setEmail("admin@gmail.com");
+            admin.setFirstName("admin");
+            admin.setLastName("admin");
+            admin.setRole("ROLE_ADMIN");
+            userRepository.save(admin);
+        }
         if (userByEmail != null) {
             log.error("Email already exist");
             return new ResponseEntity<String>("Email already exist", HttpStatus.BAD_REQUEST);
@@ -41,6 +55,6 @@ public class AuthService {
             user.setEnabled(false);
             userRepository.save(user);
         }
-        return ResponseEntity.ok("valid");
+        return ResponseEntity.ok("Registered");
     }
 }
