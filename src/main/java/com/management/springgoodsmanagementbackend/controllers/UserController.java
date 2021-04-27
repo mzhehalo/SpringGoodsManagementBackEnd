@@ -28,4 +28,9 @@ public class UserController {
     public ResponseEntity<String> editUser(@RequestBody @Valid UserWithEmailDTO userWithEmailDTO){
         return userService.editUser(userWithEmailDTO);
     }
+
+    @RequestMapping(path = "/delete/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUser(@PathVariable Integer userId){
+        return userService.deleteUser(userId);
+    }
 }

@@ -39,7 +39,7 @@ public class Product {
     private ZonedDateTime productCreated;
 
     //    @JsonIgnore
-    @ManyToOne(targetEntity = User.class, optional = false, cascade = CascadeType.PERSIST)
+    @ManyToOne(targetEntity = User.class)
     private User productSeller;
 
     @JsonIgnore

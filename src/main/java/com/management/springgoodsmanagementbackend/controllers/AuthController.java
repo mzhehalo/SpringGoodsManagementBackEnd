@@ -19,7 +19,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @RequestMapping(path = "/register", method = RequestMethod.POST)
+    @RequestMapping(path = "/user/register", method = RequestMethod.POST)
     public ResponseEntity<String> register(@Valid @RequestBody User user) {
         return authService.registerUser(user);
     }

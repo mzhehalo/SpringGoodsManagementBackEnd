@@ -21,17 +21,18 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    private final Product product = new Product();
+
     @PostMapping(value = "add")
-    public ResponseEntity addProduct(@RequestParam MultipartFile file,
-                                     @RequestParam String mainCategory,
-                                     @RequestParam String subCategory,
-                                     @RequestParam String productName,
-                                     @RequestParam String productDescription,
-                                     @RequestParam String productBrand,
-                                     @RequestParam String productPrice,
-                                     @RequestParam String sellerId
-                                     ) {
-        Product product = new Product();
+    public ResponseEntity<String> addProduct(@RequestParam MultipartFile file,
+                                             @RequestParam String mainCategory,
+                                             @RequestParam String subCategory,
+                                             @RequestParam String productName,
+                                             @RequestParam String productDescription,
+                                             @RequestParam String productBrand,
+                                             @RequestParam String productPrice,
+                                             @RequestParam String sellerId
+    ) {
         product.setMainCategory(mainCategory);
         product.setSubCategory(subCategory);
         product.setProductName(productName);
@@ -47,14 +48,14 @@ public class ProductController {
                                       @PathVariable(required = false) Integer size,
                                       @PathVariable(required = false) Integer priceMin,
                                       @PathVariable(required = false) Integer priceMax
-                                      ) {
+    ) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         return productService.getProducts(pageRequest, priceMin, priceMax);
     }
 
     @RequestMapping(path = "/get/min/max", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<Integer> getMinMax(){
+    public List<Integer> getMinMax() {
         return productService.getMinMax();
     }
 
@@ -67,30 +68,29 @@ public class ProductController {
     @RequestMapping(path = "/category/{mainCategory}/{subCategory}/{currentPage}/{size}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ProductPageDTO getProductsByCategory(@PathVariable String mainCategory,
-                                               @PathVariable String subCategory,
-                                               @PathVariable Integer currentPage,
-                                               @PathVariable Integer size) {
+                                                @PathVariable String subCategory,
+                                                @PathVariable Integer currentPage,
+                                                @PathVariable Integer size) {
         PageRequest pageRequest = PageRequest.of(currentPage - 1, size);
         return productService.getProductByCategory(mainCategory, subCategory, pageRequest);
     }
 
     @PutMapping(value = "edit")
-    public ResponseEntity editProduct(@RequestParam MultipartFile file,
-                                      @RequestParam String productName,
-                                      @RequestParam String mainCategory,
-                                      @RequestParam String subCategory,
-                                      @RequestParam String productDescription,
-                                      @RequestParam String productBrand,
-                                      @RequestParam String productPrice,
-                                      @RequestParam String productId) {
-        Product product = new Product();
+    public ResponseEntity<String> editProduct(@RequestParam MultipartFile file,
+                                              @RequestParam String productName,
+                                              @RequestParam String mainCategory,
+                                              @RequestParam String subCategory,
+                                              @RequestParam String productDescription,
+                                              @RequestParam String productBrand,
+                                              @RequestParam String productPrice,
+                                              @RequestParam String productId) {
         product.setMainCategory(mainCategory);
         product.setSubCategory(subCategory);
         product.setProductName(productName);
         product.setProductDescription(productDescription);
         product.setProductBrand(productBrand);
         product.setProductPrice(Integer.parseInt(productPrice));
-        return productService.editProduct(file ,product, Integer.parseInt(productId));
+        return productService.editProduct(file, product, Integer.parseInt(productId));
     }
 
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)

@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByMainCategoryAndSubCategory(String mainCategory, String subCategory, Pageable pageable);
@@ -14,8 +17,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Page<Product> findProductsByProductPriceLessThanAndProductPriceGreaterThan(Integer priceMin, Integer priceMax,
                                                                        Pageable pageable);
-    Product findFirstByOrderByProductPriceAsc();
-    Product findFirstByOrderByProductPriceDesc();
+    Optional<Product> findFirstByOrderByProductPriceAsc();
+    Optional<Product> findFirstByOrderByProductPriceDesc();
 
     Product findById(int id);
+
 }

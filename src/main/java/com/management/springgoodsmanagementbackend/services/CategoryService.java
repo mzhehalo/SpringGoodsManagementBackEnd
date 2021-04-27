@@ -1,7 +1,9 @@
 package com.management.springgoodsmanagementbackend.services;
 
-import com.management.springgoodsmanagementbackend.model.Category;
-import com.management.springgoodsmanagementbackend.repositories.CategoryRepository;
+import com.management.springgoodsmanagementbackend.model.MainCategory;
+import com.management.springgoodsmanagementbackend.model.SubCategory;
+import com.management.springgoodsmanagementbackend.repositories.MainCategoryRepository;
+import com.management.springgoodsmanagementbackend.repositories.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,29 +14,63 @@ import java.util.Optional;
 @Service
 public class CategoryService {
     @Autowired
-    private CategoryRepository categoryRepository;
+    private MainCategoryRepository mainCategoryRepository;
 
-    public List<Category> getCategories() {
-        return categoryRepository.findAll();
+    @Autowired
+    private SubCategoryRepository subCategoryRepository;
+
+    public List<MainCategory> getCategories() {
+        return mainCategoryRepository.findAll();
     }
 
-    public List<Category> addCategories(Category categories) {
-        categoryRepository.save(categories);
-        return categoryRepository.findAll();
+    public ResponseEntity<String> addMainCategory(MainCategory categories) {
+        mainCategoryRepository.save(categories);
+        return ResponseEntity.ok("Added Main!");
     }
 
-    public ResponseEntity<String> updateCategory(Category category) {
-        Optional<Category> byId = categoryRepository.findById(category.getId());
-        byId.ifPresent(category1 -> {
-            category1.setMainCategory(category.getMainCategory());
-            category1.setSubCategory(category.getSubCategory());
-            categoryRepository.save(category1);
+    public List<MainCategory> addSubCategory(Integer idMain, SubCategory subCategory) {
+        Optional<MainCategory> byId = mainCategoryRepository.findById(idMain);
+        byId.ifPresent(mainCategory -> {
+            mainCategory.getSubCategories().add(subCategory);
+            mainCategoryRepository.save(mainCategory);
         });
-        return ResponseEntity.ok("Updated!");
+        return mainCategoryRepository.findAll();
     }
 
-    public ResponseEntity<String> deleteCategory(Integer id) {
-        categoryRepository.deleteById(id);
-        return ResponseEntity.ok("Deleted!");
+    public ResponseEntity<String> updateMainCategory(MainCategory mainCategory) {
+        Optional<MainCategory> byId = mainCategoryRepository.findById(mainCategory.getId());
+        byId.ifPresent(mainCategory1 -> {
+            mainCategory1.setMainCategory(mainCategory.getMainCategory());
+            mainCategoryRepository.save(mainCategory1);
+        });
+        return ResponseEntity.ok("Updated Main!");
+    }
+
+    public ResponseEntity<String> updateSubCategory(SubCategory subCategory) {
+        Optional<SubCategory> byId = subCategoryRepository.findById(subCategory.getId());
+
+        byId.ifPresent(subCategory1 -> {
+            subCategory1.setSubCategory(subCategory.getSubCategory());
+            subCategoryRepository.save(subCategory1);
+        });
+        return ResponseEntity.ok("Updated Sub!");
+    }
+
+    public ResponseEntity<String> deleteMainCategory(Integer id) {
+        mainCategoryRepository.deleteById(id);
+        return ResponseEntity.ok("Deleted Main!");
+    }
+
+    public ResponseEntity<String> deleteSubCategory(Integer subId) {
+
+        List<MainCategory> allMainCategories = mainCategoryRepository.findAll();
+
+        for (MainCategory mainCategory : allMainCategories) {
+
+            mainCategory.getSubCategories().removeIf(subCategory -> subCategory.getId() == subId);
+        }
+
+        subCategoryRepository.deleteById(subId);
+        return ResponseEntity.ok("Deleted Sub!");
     }
 }

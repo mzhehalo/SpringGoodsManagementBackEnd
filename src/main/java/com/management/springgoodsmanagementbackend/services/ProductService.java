@@ -44,7 +44,11 @@ public class ProductService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public ResponseEntity addProduct(MultipartFile file, Product product, Integer sellerId) {
+    int firstByOrderByProductPriceAscVariable;
+    int firstByOrderByProductPriceDescVariable;
+
+
+    public ResponseEntity<String> addProduct(MultipartFile file, Product product, Integer sellerId) {
         product.setProductCreated(ZonedDateTime.now());
         userRepository.findById(sellerId).ifPresent(product::setProductSeller);
 
@@ -61,7 +65,7 @@ public class ProductService {
             }
         }
 
-        Path destination = Paths.get(resourceDirectory.toString() + "\\" + fileName);
+        Path destination = Paths.get(resourceDirectory + "\\" + fileName);
 
         try {
             Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
@@ -100,7 +104,7 @@ public class ProductService {
         return productRepositoryById;
     }
 
-    public ResponseEntity editProduct(MultipartFile file, Product product, Integer productId) {
+    public ResponseEntity<String> editProduct(MultipartFile file, Product product, Integer productId) {
         Optional<Product> productRepositoryById = productRepository.findById(productId);
 
         productRepositoryById.ifPresent(product1 -> {
@@ -142,8 +146,8 @@ public class ProductService {
 
     public void deleteProduct(Integer productId) {
         Optional<Product> productbyId = productRepository.findById(productId);
-        List<User> users = userRepository.findAll();
-        List<CartProduct> allByProductId = cartRepository.findAllByProductId(productId);
+        List<User> allUsers = userRepository.findAll();
+        List<CartProduct> cartRepositoryAllByProductId = cartRepository.findAllByProductId(productId);
 
         productbyId.ifPresent(product -> {
             Path destination = Paths.get(product.getProductImgUrl());
@@ -155,19 +159,19 @@ public class ProductService {
             }
         });
 
-        for (User user : users) {
+        for (User user : allUsers) {
             productbyId.ifPresent(product ->
             {
                 user.getProductsWishList().remove(product);
 
             });
-            user.getCartProductList().removeAll(allByProductId);
+            user.getCartProductList().removeAll(cartRepositoryAllByProductId);
             List<Ordering> orderList = orderRepository.findAll();
             orderList.forEach(ordering -> {
-                ordering.getCartProductListOrder().removeAll(allByProductId);
+                ordering.getCartProductListOrder().removeAll(cartRepositoryAllByProductId);
                 orderRepository.save(ordering);
             });
-            cartRepository.deleteAll(allByProductId);
+            cartRepository.deleteAll(cartRepositoryAllByProductId);
         }
         productRepository.deleteById(productId);
     }
@@ -211,8 +215,16 @@ public class ProductService {
     }
 
     public List<Integer> getMinMax() {
-        Integer firstByOrderByProductPriceAsc = productRepository.findFirstByOrderByProductPriceAsc().getProductPrice();
-        Integer firstByOrderByProductPriceDesc = productRepository.findFirstByOrderByProductPriceDesc().getProductPrice();
-        return Arrays.asList(firstByOrderByProductPriceAsc, firstByOrderByProductPriceDesc);
+
+        Optional<Product> firstByOrderByProductPriceAsc = productRepository.findFirstByOrderByProductPriceAsc();
+        firstByOrderByProductPriceAsc.ifPresent(product -> {
+            firstByOrderByProductPriceAscVariable = product.getProductPrice();
+        });
+
+        Optional<Product> firstByOrderByProductPriceDesc = productRepository.findFirstByOrderByProductPriceDesc();
+        firstByOrderByProductPriceDesc.ifPresent(product -> {
+            firstByOrderByProductPriceDescVariable = product.getProductPrice();
+        });
+        return Arrays.asList(firstByOrderByProductPriceAscVariable, firstByOrderByProductPriceDescVariable);
     }
 }

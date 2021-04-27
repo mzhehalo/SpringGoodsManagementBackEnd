@@ -1,6 +1,7 @@
 package com.management.springgoodsmanagementbackend.services;
 
 import com.management.springgoodsmanagementbackend.dtos.UserWithEmailDTO;
+import com.management.springgoodsmanagementbackend.model.Product;
 import com.management.springgoodsmanagementbackend.model.User;
 import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +28,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private ProductService productService;
 
     public User getUser(String email) {
         return userRepository.findByEmail(email);
@@ -45,5 +51,19 @@ public class UserService {
             userRepository.save(userByEmailFind);
         }
         return ResponseEntity.ok("User edited");
+    }
+
+    public ResponseEntity<String> deleteUser(Integer userId) {
+        Optional<User> byId = userRepository.findById(userId);
+
+        byId.ifPresent(user -> {
+            List<Product> productList = user.getProductList();
+            productList.forEach(product -> {
+                productService.deleteProduct(product.getId());
+            });
+        });
+
+        userRepository.deleteById(userId);
+        return ResponseEntity.ok("User Deleted!");
     }
 }
