@@ -55,6 +55,6 @@ public class AuthService {
             user.setEnabled(false);
             userRepository.save(user);
         }
-        return ResponseEntity.ok("Registered");
+        return ResponseEntity.ok("User Registered!");
     }
 }
