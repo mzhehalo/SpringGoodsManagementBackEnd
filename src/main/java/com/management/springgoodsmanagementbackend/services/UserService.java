@@ -45,7 +45,6 @@ public class UserService {
     }
 
     public ResponseEntity<String> editUser(Integer userId, User user) {
-//        boolean userByEmail = userRepository.existsUserByEmail(userWithEmailDTO.getUser().getEmail());
         Optional<User> userById = userRepository.findById(userId);
 
         boolean isEmailMatch = userById.filter(user1 -> user1.getEmail().equals(user.getEmail())).isPresent();
@@ -63,8 +62,6 @@ public class UserService {
                 userRepository.save(userByIdFount);
             });
         }
-
-//        User userByEmailFind = userRepository.findByEmail(userWithEmailDTO.getEmail());
 
         return ResponseEntity.ok("User edited");
     }

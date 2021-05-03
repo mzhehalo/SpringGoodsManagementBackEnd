@@ -26,6 +26,9 @@ public class OrderService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private ProductService productService;
+
     public List<Ordering> addOrderInfo(Ordering orderingInfo, Integer customerId) {
         Optional<User> userRepositoryById = userRepository.findById(customerId);
 
@@ -125,6 +128,7 @@ public class OrderService {
                     }
                 });
             });
+            newCartProduct.forEach(cartProduct -> productService.setImageToProduct(cartProduct.getProduct()));
         });
 
         return orderNew;

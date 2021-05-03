@@ -38,7 +38,6 @@ public class Product {
     @JsonFormat(pattern = "yyyy-MMM-dd HH-mm-ss")
     private ZonedDateTime productCreated;
 
-    //    @JsonIgnore
     @ManyToOne(targetEntity = User.class)
     private User productSeller;
 
