@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -18,10 +19,14 @@ public class Ordering {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotBlank(message = "Customer name is required!")
     private String customerName;
+    @NotBlank(message = "Customer Address is required!")
     private String customerAddress;
+    @NotBlank(message = "Customer Country is required!")
     private String customerCountry;
-    private int customerNumber;
+    @NotBlank(message = "Customer Number is required!")
+    private String customerNumber;
     private boolean paid;
 
     @ManyToOne(targetEntity = User.class)

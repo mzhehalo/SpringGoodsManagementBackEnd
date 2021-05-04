@@ -4,8 +4,10 @@ import com.management.springgoodsmanagementbackend.model.Ordering;
 import com.management.springgoodsmanagementbackend.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,15 +19,14 @@ public class OrderController {
     private OrderService orderService;
 
     @RequestMapping(path = "/add/{customerId}", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.OK)
-    public List<Ordering> addOrderInfo(@RequestBody Ordering orderingInfo, @PathVariable Integer customerId){
+    public ResponseEntity<String> addOrderInfo(@RequestBody @Valid Ordering orderingInfo, @PathVariable Integer customerId){
         return orderService.addOrderInfo(orderingInfo, customerId);
     }
 
     @RequestMapping(path = "/get/orders/{sellerId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Ordering> getOrders(@PathVariable Integer sellerId){
-        return orderService.getOrders(sellerId);
+    public List<Ordering> getOrdersBySeller(@PathVariable Integer sellerId){
+        return orderService.getOrdersBySeller(sellerId);
     }
 
     @RequestMapping(path = "/get/order/{sellerId}/{orderId}", method = RequestMethod.GET)

@@ -7,12 +7,17 @@ import com.management.springgoodsmanagementbackend.repositories.CartRepository;
 import com.management.springgoodsmanagementbackend.repositories.OrderRepository;
 import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -29,10 +34,11 @@ public class OrderService {
     @Autowired
     private ProductService productService;
 
-    public List<Ordering> addOrderInfo(Ordering orderingInfo, Integer customerId) {
-        Optional<User> userRepositoryById = userRepository.findById(customerId);
+    @Autowired
+    private EmailService emailService;
 
-        List<CartProduct> allByCustomerId = cartRepository.findAllByCustomerId(customerId);
+    public ResponseEntity<String> addOrderInfo(Ordering orderingInfo, Integer customerId) {
+        Optional<User> userRepositoryById = userRepository.findById(customerId);
 
         List<CartProduct> allByCustomerIdAndOrdered = cartRepository.findAllByCustomerIdAndOrdered(customerId, false);
 
@@ -47,17 +53,28 @@ public class OrderService {
             ordering.setCustomer(user);
             ordering.setCartProductListOrder(allByCustomerIdAndOrdered);
 
+            List<String> listSellerEmailsDuplicated = new ArrayList<>();
+
             allByCustomerIdAndOrdered.forEach(cartProduct -> {
                 cartProduct.setOrdered(true);
                 cartRepository.save(cartProduct);
+                String sellerEmail = cartProduct.getProduct().getProductSeller().getEmail();
+                listSellerEmailsDuplicated.add(sellerEmail);
             });
+
+            List<String> listSellerEmailWithoutDuplicates = listSellerEmailsDuplicated.stream().distinct()
+                    .collect(Collectors.toList());
+
+            emailService.sendEmail(listSellerEmailWithoutDuplicates, user);
 
             orderRepository.save(ordering);
         });
-        return orderRepository.findAll();
+        return ResponseEntity.ok("Ordered!");
     }
 
-    public List<Ordering> getOrders(Integer sellerId) {
+
+
+    public List<Ordering> getOrdersBySeller(Integer sellerId) {
         Optional<User> userRepositoryById = userRepository.findById(sellerId);
         List<Ordering> allOrders = orderRepository.findAll();
         List<Ordering> orderList = new ArrayList<>();
@@ -88,6 +105,7 @@ public class OrderService {
                     }
                 });
             });
+
             if (!orderNew.getCartProductListOrder().isEmpty()) {
                 orderList.add(orderNew);
             }
