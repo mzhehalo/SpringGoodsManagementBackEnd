@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +25,6 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
 
     public ResponseEntity<String> registerUser(@Valid User user) {
         User userByEmail = userRepository.findByEmail(user.getEmail());
