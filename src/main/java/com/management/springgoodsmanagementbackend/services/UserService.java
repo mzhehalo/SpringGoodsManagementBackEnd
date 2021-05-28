@@ -32,26 +32,42 @@ public class UserService {
     @Autowired
     private ProductService productService;
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    @Autowired
+    private AuthService authService;
 
-    public User getUser(Integer userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("No user found!"));
+    public User getAuthUser() {
+        return authService.getAuthUser().get();
     }
 
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public ResponseEntity<String> editUser(Integer userId, User user) {
-        Optional<User> userById = userRepository.findById(userId);
+    public User getUserById(Integer userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("No user found!"));
+    }
 
+    public ResponseEntity<String> editUser(User user) {
+        Optional<User> userById = userRepository.findById(user.getId());
+        Optional<User> userRepositoryByEmail = userRepository.findByEmail(user.getEmail());
         boolean isEmailMatch = userById.filter(user1 -> user1.getEmail().equals(user.getEmail())).isPresent();
-        System.out.println(isEmailMatch + "   isEmailMatch");
-        if (isEmailMatch) {
-            log.error("Email already exist");
-            return new ResponseEntity<String>("Email already exist", HttpStatus.BAD_REQUEST);
+
+        if (userRepositoryByEmail.isPresent()) {
+            if (isEmailMatch && userRepositoryByEmail.get().getId() == user.getId()) {
+                userById.ifPresent(userByIdFount -> {
+                    userByIdFount.setFirstName(user.getFirstName());
+                    userByIdFount.setLastName(user.getLastName());
+                    userByIdFount.setCreated(ZonedDateTime.now());
+                    userByIdFount.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+                    userRepository.save(userByIdFount);
+                });
+            }
+
+            if (userRepositoryByEmail.get().getId() != user.getId()) {
+                log.error("User with this email already exist");
+                return new ResponseEntity<>("User with this email already exist", HttpStatus.BAD_REQUEST);
+            }
+
         } else {
             userById.ifPresent(userByIdFount -> {
                 userByIdFount.setFirstName(user.getFirstName());
@@ -63,17 +79,28 @@ public class UserService {
             });
         }
 
-        return ResponseEntity.ok("User edited");
+        return ResponseEntity.ok("User edited!");
     }
 
-    public ResponseEntity<String> deleteUser(Integer userId) {
+    public ResponseEntity<String> deleteUser() {
+
+        Optional<User> authUser = authService.getAuthUser();
+
+        authUser.ifPresent(user -> {
+            List<Product> productList = user.getProductList();
+            productList.forEach(product -> productService.deleteProduct(product.getId()));
+        });
+
+        userRepository.deleteById(authUser.get().getId());
+        return ResponseEntity.ok("User Deleted!");
+    }
+
+    public ResponseEntity<String> deleteUserById(Integer userId) {
         Optional<User> byId = userRepository.findById(userId);
 
         byId.ifPresent(user -> {
             List<Product> productList = user.getProductList();
-            productList.forEach(product -> {
-                productService.deleteProduct(product.getId());
-            });
+            productList.forEach(product -> productService.deleteProduct(product.getId()));
         });
 
         userRepository.deleteById(userId);

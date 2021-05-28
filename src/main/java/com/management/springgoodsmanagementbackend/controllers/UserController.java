@@ -18,16 +18,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(path = "/get/email", method = RequestMethod.POST)
+    @RequestMapping(path = "/get", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public User getUserByEmail(@RequestBody String email) {
-        return userService.getUserByEmail(email);
-    }
-
-    @RequestMapping(path = "/get/{userId}", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public User getUser(@PathVariable Integer userId) {
-        return userService.getUser(userId);
+    public User getAuthUser() {
+        return userService.getAuthUser();
     }
 
     @RequestMapping(path = "/get/all", method = RequestMethod.GET)
@@ -36,16 +30,24 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @RequestMapping(path = "/edit/{userId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editUser(@RequestBody @Valid User user,
-                                           @PathVariable Integer userId
-                                           ) {
-        return userService.editUser(userId, user);
+    @RequestMapping(path = "/admin/get/{userId}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public User getUserById(@PathVariable Integer userId) {
+        return userService.getUserById(userId);
     }
 
-    @RequestMapping(path = "/delete/{userId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteUser(@PathVariable Integer userId) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok("User deleted!");
+    @RequestMapping(path = "/edit", method = RequestMethod.PUT)
+    public ResponseEntity<String> editUser(@RequestBody @Valid User user) {
+        return userService.editUser(user);
+    }
+
+    @RequestMapping(path = "/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUser() {
+        return userService.deleteUser();
+    }
+
+    @RequestMapping(path = "/admin/delete/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUserById(@PathVariable Integer userId) {
+        return userService.deleteUserById(userId);
     }
 }

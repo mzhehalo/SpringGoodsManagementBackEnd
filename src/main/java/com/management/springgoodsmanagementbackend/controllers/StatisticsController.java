@@ -13,9 +13,8 @@ public class StatisticsController {
     @Autowired
     private StatisticService statisticService;
 
-    @RequestMapping(path = "/get/{userId}", method = RequestMethod.GET)
-    public StatisticsDTO getStatistics(@PathVariable Integer userId){
-
-        return statisticService.getStatistics(userId);
+    @RequestMapping(path = "/get", method = RequestMethod.GET)
+    public StatisticsDTO getStatistics() {
+        return statisticService.getStatistics();
     }
 }

@@ -1,7 +1,6 @@
 package com.management.springgoodsmanagementbackend.services;
 
 import com.management.springgoodsmanagementbackend.model.Product;
-import com.management.springgoodsmanagementbackend.dtos.UserIdWithProductIdDTO;
 import com.management.springgoodsmanagementbackend.model.User;
 import com.management.springgoodsmanagementbackend.repositories.ProductRepository;
 import com.management.springgoodsmanagementbackend.repositories.UserRepository;
@@ -22,10 +21,13 @@ public class WishlistService {
     @Autowired
     private ProductService productService;
 
-    public List<Product> getAllProductsFromWishlist(Integer loggedUser) {
+    @Autowired
+    private AuthService authService;
+
+    public List<Product> getAllProductsFromWishlist() {
         List<Integer> listProductsOfLoggedUser = new ArrayList<>();
-        Optional<User> activeUser = userRepository.findById(loggedUser);
-        activeUser.ifPresent(user ->
+        Optional<User> authUser = authService.getAuthUser();
+        authUser.ifPresent(user ->
                 user.getProductsWishList().forEach(
                         product ->
                                 listProductsOfLoggedUser.add(product.getId())
@@ -40,43 +42,42 @@ public class WishlistService {
         return allById;
     }
 
-    public List<Integer> getAllLikesProductsFromWishlist(Integer loggedUser) {
-
+    public List<Integer> getAllLikesProductsFromWishlist() {
         List<Integer> listLikesProductsOfActiveUser = new ArrayList<>();
-        Optional<User> activeUser = userRepository.findById(loggedUser);
-        activeUser.ifPresent(user ->
+        Optional<User> authUser = authService.getAuthUser();
+        authUser.ifPresent(user ->
                 user.getProductsWishList().forEach(
                         product ->
-                        listLikesProductsOfActiveUser.add(product.getId())
+                                listLikesProductsOfActiveUser.add(product.getId())
                 ));
 
         return listLikesProductsOfActiveUser.stream()
                 .distinct()
                 .collect(Collectors.toList());
-
     }
 
+    public List<Integer> addProductToWishlist(Integer productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        Optional<User> authUser = authService.getAuthUser();
 
-    public List<Product> addProductToWishlist(UserIdWithProductIdDTO userIdWithProductIdDTO) {
-        Product product = productRepository.findById(userIdWithProductIdDTO.getProductId());
-        Optional<User> user = userRepository.findById(userIdWithProductIdDTO.getUserId());
-        user.ifPresent(user1 -> {
-                    user1.addProduct(product);
+        product.ifPresent(product1 -> authUser.ifPresent(user1 -> {
+                    user1.addProduct(product1);
                     userRepository.save(user1);
                 }
-        );
-        return productRepository.findAll();
+        ));
+        return getAllLikesProductsFromWishlist();
     }
 
-    public List<Product> deleteFromWishlist(Integer customerId, Integer productId) {
-        Optional<Product> productG = productRepository.findById(productId);
-        Optional<User> user = userRepository.findById(customerId);
-        productG.ifPresent(product2 ->
-                        user.ifPresent(user1 -> {
-                            user1.removeProduct(product2);
-                            userRepository.save(user1);
-                        })
+    public List<Integer> removeProductFromWishlist(Integer productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        Optional<User> authUser = authService.getAuthUser();
+
+        product.ifPresent(product1 ->
+                authUser.ifPresent(user1 -> {
+                    user1.removeProduct(product1);
+                    userRepository.save(user1);
+                })
         );
-        return productRepository.findAll();
+        return getAllLikesProductsFromWishlist();
     }
 }

@@ -18,26 +18,32 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @RequestMapping(path = "/add/{customerId}", method = RequestMethod.POST)
-    public ResponseEntity<String> addOrderInfo(@RequestBody @Valid Ordering orderingInfo, @PathVariable Integer customerId){
-        return orderService.addOrderInfo(orderingInfo, customerId);
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public ResponseEntity<String> addOrderInfo(@RequestBody @Valid Ordering orderingInfo) {
+        return orderService.addOrderInfo(orderingInfo);
     }
 
-    @RequestMapping(path = "/get/orders/{sellerId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/get/orders", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Ordering> getOrdersBySeller(@PathVariable Integer sellerId){
-        return orderService.getOrdersBySeller(sellerId);
+    public List<Ordering> getAllOrders() {
+        return orderService.getAllOrders();
     }
 
-    @RequestMapping(path = "/get/order/{sellerId}/{orderId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/get/orders/quantity", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Ordering getOrder(@PathVariable Integer sellerId, @PathVariable Integer orderId){
-        return orderService.getOrder(sellerId, orderId);
+    public Integer getOrdersQuantityBySeller() {
+        return orderService.getOrdersQuantityBySeller();
     }
 
-    @RequestMapping(path = "/delete/{sellerId}/{orderId}", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/get/order/{orderId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public void deleteOrder(@PathVariable Integer sellerId, @PathVariable Integer orderId){
-        this.orderService.deleteOrder(sellerId, orderId);
+    public Ordering getOrder(@PathVariable Integer orderId) {
+        return orderService.getOrder(orderId);
+    }
+
+    @RequestMapping(path = "/delete/{orderId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    public Integer deleteOrder(@PathVariable Integer orderId) {
+       return this.orderService.deleteOrder(orderId);
     }
 }

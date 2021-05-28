@@ -5,12 +5,8 @@ import com.management.springgoodsmanagementbackend.model.Ordering;
 import com.management.springgoodsmanagementbackend.model.User;
 import com.management.springgoodsmanagementbackend.repositories.CartRepository;
 import com.management.springgoodsmanagementbackend.repositories.OrderRepository;
-import com.management.springgoodsmanagementbackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -26,9 +22,6 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private CartRepository cartRepository;
 
     @Autowired
@@ -37,12 +30,16 @@ public class OrderService {
     @Autowired
     private EmailService emailService;
 
-    public ResponseEntity<String> addOrderInfo(Ordering orderingInfo, Integer customerId) {
-        Optional<User> userRepositoryById = userRepository.findById(customerId);
+    @Autowired
+    private AuthService authService;
 
-        List<CartProduct> allByCustomerIdAndOrdered = cartRepository.findAllByCustomerIdAndOrdered(customerId, false);
 
-        userRepositoryById.ifPresent(user -> {
+    public ResponseEntity<String> addOrderInfo(Ordering orderingInfo) {
+        Optional<User> authUser = authService.getAuthUser();
+        List<CartProduct> allByCustomerIdAndOrdered =
+                cartRepository.findAllByCustomerIdAndOrdered(authUser.get().getId(), false);
+
+        authUser.ifPresent(user -> {
             Ordering ordering = new Ordering();
             ordering.setCustomerName(orderingInfo.getCustomerName());
             ordering.setCustomerAddress(orderingInfo.getCustomerAddress());
@@ -72,10 +69,8 @@ public class OrderService {
         return ResponseEntity.ok("Ordered!");
     }
 
-
-
-    public List<Ordering> getOrdersBySeller(Integer sellerId) {
-        Optional<User> userRepositoryById = userRepository.findById(sellerId);
+    public List<Ordering> getAllOrders() {
+        Optional<User> authUser = authService.getAuthUser();
         List<Ordering> allOrders = orderRepository.findAll();
         List<Ordering> orderList = new ArrayList<>();
         allOrders.forEach(order -> {
@@ -97,7 +92,7 @@ public class OrderService {
 
             cartProductListOrder.forEach(cartProduct -> {
                 User productSeller = cartProduct.getProduct().getProductSeller();
-                userRepositoryById.ifPresent(user -> {
+                authUser.ifPresent(user -> {
                     if (productSeller == user) {
                         newCartProduct.add(cartProduct);
                     } else {
@@ -113,9 +108,12 @@ public class OrderService {
         return orderList;
     }
 
-    public Ordering getOrder(Integer sellerId, Integer orderId) {
+    public Integer getOrdersQuantityBySeller() {
+            return getAllOrders().size();
+    }
 
-        Optional<User> userRepositoryById = userRepository.findById(sellerId);
+    public Ordering getOrder(Integer orderId) {
+        Optional<User> authUser = authService.getAuthUser();
         Optional<Ordering> orderById = orderRepository.findById(orderId);
 
         Ordering orderNew = new Ordering();
@@ -138,7 +136,7 @@ public class OrderService {
 
             cartProductListOrder.forEach(cartProduct -> {
                 User productSeller = cartProduct.getProduct().getProductSeller();
-                userRepositoryById.ifPresent(user -> {
+                authUser.ifPresent(user -> {
                     if (productSeller == user) {
                         newCartProduct.add(cartProduct);
                     } else {
@@ -152,8 +150,8 @@ public class OrderService {
         return orderNew;
     }
 
-    public void deleteOrder(Integer sellerId, Integer orderId) {
-        Optional<User> userRepositoryById = userRepository.findById(sellerId);
+    public Integer deleteOrder(Integer orderId) {
+        Optional<User> authUser = authService.getAuthUser();
         Optional<Ordering> orderById = orderRepository.findById(orderId);
 
         orderById.ifPresent(order -> {
@@ -165,7 +163,7 @@ public class OrderService {
             cartProductListOrder.forEach(cartProduct -> {
                 User productSeller = cartProduct.getProduct().getProductSeller();
 
-                userRepositoryById.ifPresent(user -> {
+                authUser.ifPresent(user -> {
                     if (productSeller != user) {
                         newCartProduct.add(cartProduct);
                     } else {
@@ -179,7 +177,7 @@ public class OrderService {
             cartProductListOrder.forEach(cartProduct -> {
                 User productSeller = cartProduct.getProduct().getProductSeller();
 
-                userRepositoryById.ifPresent(user -> {
+                authUser.ifPresent(user -> {
                     if (productSeller == user) {
                         cartRepository.delete(cartProduct);
                     } else {
@@ -192,5 +190,6 @@ public class OrderService {
                 orderRepository.delete(order);
             }
         });
+        return getOrdersQuantityBySeller();
     }
 }

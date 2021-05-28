@@ -1,5 +1,6 @@
 package com.management.springgoodsmanagementbackend.controllers;
 
+import com.management.springgoodsmanagementbackend.dtos.PriceMinMaxDTO;
 import com.management.springgoodsmanagementbackend.dtos.ProductPageDTO;
 import com.management.springgoodsmanagementbackend.model.Product;
 import com.management.springgoodsmanagementbackend.services.ProductService;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,8 +30,7 @@ public class ProductController {
                                              @RequestParam String productName,
                                              @RequestParam String productDescription,
                                              @RequestParam String productBrand,
-                                             @RequestParam String productPrice,
-                                             @RequestParam String sellerId
+                                             @RequestParam String productPrice
     ) {
         product.setMainCategory(mainCategory);
         product.setSubCategory(subCategory);
@@ -39,7 +38,7 @@ public class ProductController {
         product.setProductDescription(productDescription);
         product.setProductBrand(productBrand);
         product.setProductPrice(Integer.parseInt(productPrice));
-        return productService.addProduct(file, product, Integer.parseInt(sellerId));
+        return productService.addProduct(file, product);
     }
 
     @RequestMapping(path = "/get/{page}/{size}/{priceMin}/{priceMax}", method = RequestMethod.GET)
@@ -53,10 +52,12 @@ public class ProductController {
         return productService.getProducts(pageRequest, priceMin, priceMax);
     }
 
-    @RequestMapping(path = "/get/min/max", method = RequestMethod.GET)
+    @RequestMapping(path = "/get/min/max/{mainCategory}/{subCategory}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<Integer> getMinMax() {
-        return productService.getMinMax();
+    public PriceMinMaxDTO getMinMax(@PathVariable String mainCategory,
+                                          @PathVariable String subCategory
+                                   ) {
+        return productService.getMinMax(mainCategory, subCategory);
     }
 
     @RequestMapping(path = "/get/{id}", method = RequestMethod.GET)
@@ -65,18 +66,20 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @RequestMapping(path = "/category/{mainCategory}/{subCategory}/{currentPage}/{size}", method = RequestMethod.GET)
+    @RequestMapping(path = "/category/{mainCategory}/{subCategory}/{currentPage}/{size}/{priceMin}/{priceMax}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ProductPageDTO getProductsByCategory(@PathVariable String mainCategory,
                                                 @PathVariable String subCategory,
                                                 @PathVariable Integer currentPage,
-                                                @PathVariable Integer size) {
+                                                @PathVariable Integer size,
+                                                @PathVariable(required = false) Integer priceMin,
+                                                @PathVariable(required = false) Integer priceMax) {
         PageRequest pageRequest = PageRequest.of(currentPage - 1, size);
-        return productService.getProductByCategory(mainCategory, subCategory, pageRequest);
+        return productService.getProductByCategory(mainCategory, subCategory, pageRequest, priceMin, priceMax);
     }
 
     @PutMapping(value = "edit")
-    public ResponseEntity<String> editProduct(@RequestParam MultipartFile file,
+    public ResponseEntity<HttpStatus> editProduct(@RequestParam MultipartFile file,
                                               @RequestParam String productName,
                                               @RequestParam String mainCategory,
                                               @RequestParam String subCategory,
@@ -95,8 +98,8 @@ public class ProductController {
 
     @RequestMapping(path = "/delete/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProduct(@PathVariable Integer id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Integer id) {
+        return productService.deleteProduct(id);
     }
 
 }

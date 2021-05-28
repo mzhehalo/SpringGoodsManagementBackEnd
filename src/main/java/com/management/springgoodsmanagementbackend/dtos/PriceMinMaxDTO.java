@@ -1,6 +1,5 @@
 package com.management.springgoodsmanagementbackend.dtos;
 
-import com.management.springgoodsmanagementbackend.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserWithEmailDTO {
-    private User user;
-    private String email;
+public class PriceMinMaxDTO {
+    private Integer priceMin;
+    private Integer priceMax;
 }

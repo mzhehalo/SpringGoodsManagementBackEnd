@@ -1,7 +1,6 @@
 package com.management.springgoodsmanagementbackend.controllers;
 
 import com.management.springgoodsmanagementbackend.dtos.CartDTO;
-import com.management.springgoodsmanagementbackend.dtos.CartRequestDTO;
 import com.management.springgoodsmanagementbackend.model.CartProduct;
 import com.management.springgoodsmanagementbackend.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +19,19 @@ public class CartController {
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public List<CartProduct> addToCartProductList(@RequestBody CartRequestDTO cartRequestDTO){
-        return cartService.addToCartProductList(cartRequestDTO);
+    public List<CartDTO> addToCartProduct(@RequestBody Integer productId) {
+        return cartService.addToCartProduct(productId);
     }
 
-    @RequestMapping(path = "/get/{userId}", method = RequestMethod.GET)
+    @RequestMapping(path = "/get", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<CartDTO> getCartList(@PathVariable Integer userId){
-        return cartService.getCartList(userId);
+    public List<CartDTO> getCartList() {
+        return cartService.getCartList();
     }
 
-    @RequestMapping(path = "/delete/{userId}/{productId}", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/delete/{productId}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
-    public List<CartProduct> deleteCartItem(@PathVariable Integer userId, @PathVariable Integer productId){
-        return this.cartService.deleteCartItem(userId, productId);
+    public List<CartProduct> deleteCartItem(@PathVariable Integer productId){
+        return this.cartService.deleteCartItem(productId);
     }
 }

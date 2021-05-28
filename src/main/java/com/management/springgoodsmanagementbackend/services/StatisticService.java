@@ -7,30 +7,29 @@ import com.management.springgoodsmanagementbackend.model.Product;
 import com.management.springgoodsmanagementbackend.model.User;
 import com.management.springgoodsmanagementbackend.repositories.OrderRepository;
 import com.management.springgoodsmanagementbackend.repositories.ProductRepository;
-import com.management.springgoodsmanagementbackend.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class StatisticService {
     @Autowired
     private OrderRepository orderRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ProductRepository productRepository;
 
-    public StatisticsDTO getStatistics(Integer sellerId) {
+    @Autowired
+    private AuthService authService;
+
+    public StatisticsDTO getStatistics() {
+        Optional<User> authUser = authService.getAuthUser();
         long ordersQuantityAll = orderRepository.count();
-        System.out.println(ordersQuantityAll);
-        Optional<User> userRepositoryById = userRepository.findById(sellerId);
         List<Ordering> allOrders = orderRepository.findAll();
         List<Ordering> orderList = new ArrayList<>();
         List<Integer> productPriceSeller = new ArrayList<>();
@@ -56,7 +55,7 @@ public class StatisticService {
                 User productSeller = cartProduct.getProduct().getProductSeller();
                 int productPriceForAll = cartProduct.getProduct().getProductPrice();
                 productPriceAll.add(productPriceForAll);
-                userRepositoryById.ifPresent(user -> {
+                authUser.ifPresent(user -> {
                     if (productSeller == user) {
                         newCartProduct.add(cartProduct);
                         int productPrice1 = cartProduct.getProduct().getProductPrice();
@@ -72,13 +71,10 @@ public class StatisticService {
         });
 
         long orderListQuantity = orderList.size();
-        System.out.println(orderListQuantity);
 
         long numberOfProductsAll = productRepository.count();
 
-        User userRepositoryById1 = userRepository.findById(sellerId).get();
-
-        int numberOfProducts = userRepositoryById1.getProductList().size();
+        int numberOfProducts = authUser.get().getProductList().size();
 
         int sumOrderedAll = productPriceAll.stream().mapToInt(Integer::intValue).sum();
         int sumOrdered = productPriceSeller.stream().mapToInt(Integer::intValue).sum();
@@ -89,7 +85,7 @@ public class StatisticService {
 
         allProducts.forEach(product -> {
             allPriceProducts.add(product.getProductPrice());
-            if (product.getProductSeller().equals(userRepositoryById1)) {
+            if (product.getProductSeller().equals(authUser.get())) {
                 sellerPriceProducts.add(product.getProductPrice());
             }
         });

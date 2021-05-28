@@ -1,7 +1,6 @@
 package com.management.springgoodsmanagementbackend.controllers;
 
 import com.management.springgoodsmanagementbackend.model.Product;
-import com.management.springgoodsmanagementbackend.dtos.UserIdWithProductIdDTO;
 import com.management.springgoodsmanagementbackend.services.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,28 +16,27 @@ public class WishlistController {
     @Autowired
     private WishlistService wishlistService;
 
-    @RequestMapping(path = "/get-products/{loggedUser}", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-products", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Product> getAllProductsFromWishlist(@PathVariable Integer loggedUser){
-        return wishlistService.getAllProductsFromWishlist(loggedUser);
+    public List<Product> getAllProductsFromWishlist() {
+        return wishlistService.getAllProductsFromWishlist();
     }
 
-    @RequestMapping(path = "/get-likes/{loggedUser}", method = RequestMethod.GET)
+    @RequestMapping(path = "/get-likes", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Integer> getAllLikesProductsFromWishlist(@PathVariable Integer loggedUser){
-        return wishlistService.getAllLikesProductsFromWishlist(loggedUser);
+    public List<Integer> getAllLikesProductsFromWishlist() {
+        return wishlistService.getAllLikesProductsFromWishlist();
     }
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<Product> addProductToWishlist(@RequestBody UserIdWithProductIdDTO userIdWithProductIdDTO) {
-        return wishlistService.addProductToWishlist(userIdWithProductIdDTO);
+    @ResponseStatus(HttpStatus.OK)
+    public List<Integer> addProductToWishlist(@RequestBody Integer productId) {
+        return wishlistService.addProductToWishlist(productId);
     }
 
-    @RequestMapping(path = "delete/{customerId}/{productId}", method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public List<Product> deleteProductFromWishlist(@PathVariable Integer customerId, @PathVariable Integer productId){
-        return wishlistService.deleteFromWishlist(customerId, productId);
-
+    @RequestMapping(path = "/delete/{productId}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Integer> removeProductFromWishlist(@PathVariable Integer productId) {
+        return wishlistService.removeProductFromWishlist(productId);
     }
 }
